@@ -1,6 +1,7 @@
 using System.Runtime;
 using System.Drawing;
 using System.IO;
+using System.Xml.Linq;
 
 namespace hw_2023_07_15
 {
@@ -14,7 +15,7 @@ namespace hw_2023_07_15
 
             _path = @"G:\ÿ¿√\";
             _imageList = new ImageList();
-            //treeView1.ImageList = _imageList;
+            treeView1.ImageList = _imageList;
 
             treeView1.BeginUpdate();
 
@@ -31,22 +32,6 @@ namespace hw_2023_07_15
                 AddDirectoryOrFile(node, drive.Name);
                 treeView1.Nodes.Add(node);
             }
-
-            //files = root.GetFiles();
-
-            //foreach (FileInfo file in files)
-            //{
-            //    //if (!_imageList.Images.ContainsKey(file.Extension))
-            //    //{
-            //    //    iconForDir = Icon.ExtractAssociatedIcon(file.FullName);
-            //    //    _imageList.Images.Add(file.Extension, iconForDir);
-            //    //}
-
-            //    //treeView1.ImageKey = file.Extension;
-
-            //    TreeNode node = new TreeNode(file.Name);
-            //    treeView1.Nodes.Add(node);
-            //}
         }
         public void AddDirectoryOrFile(TreeNode node, string path)
         {
@@ -62,18 +47,22 @@ namespace hw_2023_07_15
 
                 }
 
-                string[] files = Directory.GetFiles(path);
+                FileInfo[] files = new DirectoryInfo(path).GetFiles();
 
-                foreach (string file in files)
+                foreach (FileInfo file in files)
                 {
+                    
                     TreeNode nodeFile = new TreeNode();
-                    nodeFile.Text = file.Remove(0, file.LastIndexOf("\\") + 1);
+                    SetIcon(file);
+                    nodeFile.Text = file.Name.Remove(0, file.Name.LastIndexOf("\\") + 1);
+                    nodeFile.ImageIndex = 0;
+                    nodeFile.SelectedImageIndex = 3;
+                    nodeFile.ImageKey = file.Extension;
                     node.Nodes.Add(nodeFile);
                 }
             }
             catch (Exception ex) { }
         }
-
         private void treeView1_BeforeSelect(object sender, TreeViewCancelEventArgs e)
         {
             string str = null;
@@ -93,9 +82,9 @@ namespace hw_2023_07_15
             e.Node.Nodes.Clear();
             string[] dirs;
 
-            if (Directory.Exists(path/*e.Node.FullPath*/))
+            if (Directory.Exists(path))
             {
-                dirs = Directory.GetDirectories(path/*e.Node.FullPath*/);
+                dirs = Directory.GetDirectories(path);
                 if (dirs.Length != 0)
                 {
                     for (int i = 0; i < dirs.Length; i++)
@@ -105,11 +94,19 @@ namespace hw_2023_07_15
                         e.Node.Nodes.Add(dirNode);
                     }
                 }
+
+                string[] files = Directory.GetFiles(path);
+
+                foreach (string file in files)
+                {
+                    TreeNode nodeFile = new TreeNode();
+                    nodeFile.Text = file.Remove(0, file.LastIndexOf("\\") + 1);
+                    e.Node.Nodes.Add(nodeFile);
+                }
             }
 
             if (e.Node.Level == 0) e.Node.Text = str;
         }
-
         private void treeView1_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
             string str = null;
@@ -141,9 +138,34 @@ namespace hw_2023_07_15
                         e.Node.Nodes.Add(dirNode);
                     }
                 }
+
+                string[] files = Directory.GetFiles(path);
+
+                foreach (string file in files)
+                {
+                    TreeNode nodeFile = new TreeNode();
+                    nodeFile.Text = file.Remove(0, file.LastIndexOf("\\") + 1);
+                    e.Node.Nodes.Add(nodeFile);
+                }
             }
 
             if (e.Node.Level == 0) e.Node.Text = str;
+        }
+        private void SetIcon(FileInfo file)
+        {
+            Icon iconForFile = SystemIcons.WinLogo;
+            string str = file.Extension;
+
+            if (!_imageList.Images.ContainsKey(file.Extension))
+            {
+                iconForFile = Icon.ExtractAssociatedIcon(file.FullName);
+                _imageList.Images.Add(file.Extension, iconForFile);
+            }
+
+            //treeView1.ImageKey = file.Extension;
+
+            //TreeNode node = new TreeNode();
+            //treeView1.Nodes.Add(node);
         }
     }
 }
