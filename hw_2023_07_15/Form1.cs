@@ -7,27 +7,31 @@ namespace hw_2023_07_15
 {
     public partial class Form1 : Form
     {
-        string _path;
         ImageList _imageList;
         public Form1()
         {
             InitializeComponent();
 
-            _path = @"G:\ÿ¿√\";
             _imageList = new ImageList();
             treeView1.ImageList = _imageList;
 
+            _imageList.Images.Add(new Bitmap(Properties.Resources.hd_hard));
+            _imageList.Images.Add(new Bitmap(Properties.Resources.folder));
+            _imageList.Images.Add(new Bitmap(Properties.Resources.open_folder));
+            
             treeView1.BeginUpdate();
 
             CreateTree();
 
             treeView1.EndUpdate();
+
+            this.Text = "TreeView";
         }
         public void CreateTree()
         {
             foreach (DriveInfo drive in DriveInfo.GetDrives())
             {
-                TreeNode node = new TreeNode { Text = drive.Name + drive.VolumeLabel };
+                TreeNode node = new TreeNode(Text = drive.Name + drive.VolumeLabel, 0, 0);
 
                 AddDirectoryOrFile(node, drive.Name);
                 treeView1.Nodes.Add(node);
@@ -51,7 +55,7 @@ namespace hw_2023_07_15
 
                 foreach (FileInfo file in files)
                 {
-                    
+
                     TreeNode nodeFile = new TreeNode();
                     //SetIcon(file);
                     nodeFile.Text = file.Name.Remove(0, file.Name.LastIndexOf("\\") + 1);
@@ -76,6 +80,9 @@ namespace hw_2023_07_15
             }
             else
             {
+                e.Node.ImageIndex = 2;
+                e.Node.SelectedImageIndex = 2;
+
                 path = e.Node.FullPath.Remove(3, e.Node.FullPath.IndexOf('\\', 3) - 2);
             }
             e.Node.Nodes.Clear();
@@ -89,7 +96,7 @@ namespace hw_2023_07_15
                 {
                     for (int i = 0; i < dirs.Length; i++)
                     {
-                        TreeNode dirNode = new TreeNode(new DirectoryInfo(dirs[i]).Name);
+                        TreeNode dirNode = new TreeNode(new DirectoryInfo(dirs[i]).Name, 1, 1);
                         AddDirectoryOrFile(dirNode, dirs[i]);
                         e.Node.Nodes.Add(dirNode);
                     }
@@ -122,6 +129,15 @@ namespace hw_2023_07_15
 
             //TreeNode node = new TreeNode();
             //treeView1.Nodes.Add(node);
+        }
+
+        private void treeView1_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
+        {
+            if (e.Node.Level != 0)
+            {
+                e.Node.ImageIndex = 1;
+                e.Node.SelectedImageIndex = 1;
+            }
         }
     }
 }

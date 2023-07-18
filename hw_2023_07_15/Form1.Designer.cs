@@ -37,6 +37,7 @@
             treeView1.Name = "treeView1";
             treeView1.Size = new Size(628, 590);
             treeView1.TabIndex = 0;
+            treeView1.BeforeCollapse += treeView1_BeforeCollapse;
             treeView1.BeforeExpand += treeView1_BeforeExpand;
             // 
             // Form1
@@ -46,7 +47,7 @@
             ClientSize = new Size(652, 614);
             Controls.Add(treeView1);
             Name = "Form1";
-            Text = "Form1";
+            Text = "TreeView";
             ResumeLayout(false);
         }
 
