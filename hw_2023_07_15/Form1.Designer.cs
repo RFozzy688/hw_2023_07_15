@@ -38,7 +38,6 @@
             treeView1.Size = new Size(628, 590);
             treeView1.TabIndex = 0;
             treeView1.BeforeExpand += treeView1_BeforeExpand;
-            treeView1.BeforeSelect += treeView1_BeforeSelect;
             // 
             // Form1
             // 

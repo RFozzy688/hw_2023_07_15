@@ -53,59 +53,15 @@ namespace hw_2023_07_15
                 {
                     
                     TreeNode nodeFile = new TreeNode();
-                    SetIcon(file);
+                    //SetIcon(file);
                     nodeFile.Text = file.Name.Remove(0, file.Name.LastIndexOf("\\") + 1);
-                    nodeFile.ImageIndex = 0;
-                    nodeFile.SelectedImageIndex = 3;
-                    nodeFile.ImageKey = file.Extension;
+                    //nodeFile.ImageIndex = 0;
+                    //nodeFile.SelectedImageIndex = 3;
+                    //nodeFile.ImageKey = file.Extension;
                     node.Nodes.Add(nodeFile);
                 }
             }
             catch (Exception ex) { }
-        }
-        private void treeView1_BeforeSelect(object sender, TreeViewCancelEventArgs e)
-        {
-            string str = null;
-            string path = null;
-
-            if (e.Node.Level == 0)
-            {
-                str = e.Node.Text;
-                e.Node.Text = e.Node.Text.Remove(3);
-                path = e.Node.FullPath;
-            }
-            else
-            {
-                path = e.Node.FullPath.Remove(3, e.Node.FullPath.IndexOf('\\', 3) - 2);
-            }
-
-            e.Node.Nodes.Clear();
-            string[] dirs;
-
-            if (Directory.Exists(path))
-            {
-                dirs = Directory.GetDirectories(path);
-                if (dirs.Length != 0)
-                {
-                    for (int i = 0; i < dirs.Length; i++)
-                    {
-                        TreeNode dirNode = new TreeNode(new DirectoryInfo(dirs[i]).Name);
-                        AddDirectoryOrFile(dirNode, dirs[i]);
-                        e.Node.Nodes.Add(dirNode);
-                    }
-                }
-
-                string[] files = Directory.GetFiles(path);
-
-                foreach (string file in files)
-                {
-                    TreeNode nodeFile = new TreeNode();
-                    nodeFile.Text = file.Remove(0, file.LastIndexOf("\\") + 1);
-                    e.Node.Nodes.Add(nodeFile);
-                }
-            }
-
-            if (e.Node.Level == 0) e.Node.Text = str;
         }
         private void treeView1_BeforeExpand(object sender, TreeViewCancelEventArgs e)
         {
