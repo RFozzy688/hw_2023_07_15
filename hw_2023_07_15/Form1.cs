@@ -51,17 +51,12 @@ namespace hw_2023_07_15
 
                 }
 
-                FileInfo[] files = new DirectoryInfo(path).GetFiles();
+                string[] files = Directory.GetFiles(path);
 
-                foreach (FileInfo file in files)
+                foreach (string file in files)
                 {
-
                     TreeNode nodeFile = new TreeNode();
-                    //SetIcon(file);
-                    nodeFile.Text = file.Name.Remove(0, file.Name.LastIndexOf("\\") + 1);
-                    //nodeFile.ImageIndex = 0;
-                    //nodeFile.SelectedImageIndex = 3;
-                    //nodeFile.ImageKey = file.Extension;
+                    nodeFile.Text = file.Remove(0, file.LastIndexOf("\\") + 1);
                     node.Nodes.Add(nodeFile);
                 }
             }
@@ -102,22 +97,24 @@ namespace hw_2023_07_15
                     }
                 }
 
-                string[] files = Directory.GetFiles(path);
+                FileInfo[] files = new DirectoryInfo(path).GetFiles();
 
-                foreach (string file in files)
+                foreach (FileInfo file in files)
                 {
-                    TreeNode nodeFile = new TreeNode();
-                    nodeFile.Text = file.Remove(0, file.LastIndexOf("\\") + 1);
+                    int index = SetIcon(file);
+
+                    TreeNode nodeFile = new TreeNode("", index, index);
+                    nodeFile.Text = file.Name.Remove(0, file.Name.LastIndexOf("\\") + 1);
                     e.Node.Nodes.Add(nodeFile);
                 }
             }
 
             if (e.Node.Level == 0) e.Node.Text = str;
         }
-        private void SetIcon(FileInfo file)
+        private int SetIcon(FileInfo file)
         {
             Icon iconForFile = SystemIcons.WinLogo;
-            string str = file.Extension;
+            int index;
 
             if (!_imageList.Images.ContainsKey(file.Extension))
             {
@@ -125,10 +122,9 @@ namespace hw_2023_07_15
                 _imageList.Images.Add(file.Extension, iconForFile);
             }
 
-            //treeView1.ImageKey = file.Extension;
+            index = _imageList.Images.IndexOfKey(file.Extension);
 
-            //TreeNode node = new TreeNode();
-            //treeView1.Nodes.Add(node);
+            return index;
         }
 
         private void treeView1_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
